@@ -7,11 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,85 +31,35 @@ public class ValidationCheck {
         driver = new ChromeDriver(options);
     }
 
-    @Test
-//    public void test_000() {
-        public void shouldShowWarningMassageWithoutEverything() {
-        driver.get("http://localhost:9999");
-        driver.findElement(By.cssSelector(".button__text")).click();
-        String textUnderName = driver.findElement(By.cssSelector(".input_invalid .input__sub")).getText();
-        assertEquals("Поле обязательно для заполнения", textUnderName.trim());
-    }
-
-
-    @Test
-//    public void test_000v2() {
-    public void shouldShowWarningMassageWithoutEverythingThroughWebElement() {
-        driver.get("http://localhost:9999");
-        driver.findElement(By.cssSelector(".button__text")).click();
-        List<WebElement> elements = driver.findElements(By.cssSelector(".input_invalid .input__sub"));
-        String warningTextUnderName = elements.get(0).getText();
-        assertEquals("Поле обязательно для заполнения", warningTextUnderName.trim());
-//        String warningTextUnderPhone = elements.get(1).getText();
-//        assertEquals("Поле обязательно для заполнения", warningTextUnderPhone.trim());
-//        String checkboxWarningText = elements.get(2).getText();
-//        assertEquals("Я соглашаюсь с условиями обработки и использования моих персональных данных и разрешаю сделать запрос в бюро кредитных историй", checkboxWarningText.trim());
+    @AfterEach
+    public void closeDriver() {
+        driver.quit();
+        driver = null;
     }
 
     @Test
-//    public void test_001() {
-        public void shouldShowWarningMassageWithCheckboxOnly() {
-        driver.get("http://localhost:9999");
-        driver.findElement(By.cssSelector("[data-test-id='agreement'] .checkbox__box")).click();
-        driver.findElement(By.cssSelector(".button__text")).click();
-        String textUnderName = driver.findElement(By.cssSelector(".input_invalid .input__sub")).getText();
-        assertEquals("Поле обязательно для заполнения", textUnderName.trim());
-    }
-
-    @Test
-//    public void test_010() {
-        public void shouldShowWarningMassageWithPhoneOnly() {
-        driver.get("http://localhost:9999");
-        driver.findElement(By.cssSelector("[data-test-id='phone'] [name='phone']")).sendKeys("+79990003322");
-        driver.findElement(By.cssSelector(".button__text")).click();
-        String textUnderName = driver.findElement(By.cssSelector(".input_invalid .input__sub")).getText();
-        assertEquals("Поле обязательно для заполнения", textUnderName.trim());
-    }
-
-    @Test
-//    public void test_011() {
-        public void shouldShowWarningMassageWithPhoneAndCheckBox() {
+        public void shouldShowWarningMassageWithoutName() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("[data-test-id='phone'] [name='phone']")).sendKeys("+79993332211");
         driver.findElement(By.cssSelector("[data-test-id='agreement'] .checkbox__box")).click();
         driver.findElement(By.cssSelector(".button__text")).click();
-        String textUnderName = driver.findElement(By.cssSelector("[data-test-id='name'] .input__sub")).getText();
+        String textUnderName = driver.findElement(By.cssSelector(".input_invalid[data-test-id='name'] .input__sub")).getText();
         assertEquals("Поле обязательно для заполнения", textUnderName.trim());
     }
 
-    @Test
-//    public void test_100() {
-        public void shouldShowWarningMassageWithNameOnly() {
-        driver.get("http://localhost:9999");
-        driver.findElement(By.cssSelector("[data-test-id='name'] [name='name']")).sendKeys("Иванов Иван");
-        driver.findElement(By.cssSelector(".button__text")).click();
-        String textUnderPhone = driver.findElement(By.cssSelector("[data-test-id='phone'] .input__sub")).getText();
-        assertEquals("Поле обязательно для заполнения", textUnderPhone.trim());
-    }
 
     @Test
-//    public void test_101() {
-        public void shouldShowWarningMassageWithNameAndCheckbox() {
+        public void shouldShowWarningMassageWithoutPhone() {
         driver.get("http://localhost:9999");
-        driver.findElement(By.cssSelector("[data-test-id='name'] [name='name']")).sendKeys("Иванов Иван");
+        driver.findElement(By.cssSelector("[data-test-id='name'] [name='name']")).sendKeys("Иванов Святослав");
         driver.findElement(By.cssSelector("[data-test-id='agreement'] .checkbox__box")).click();
         driver.findElement(By.cssSelector(".button__text")).click();
-        String textUnderName = driver.findElement(By.cssSelector("[data-test-id='phone'] .input__sub")).getText();
+        String textUnderName = driver.findElement(By.cssSelector(".input_invalid[data-test-id='phone'] .input__sub")).getText();
         assertEquals("Поле обязательно для заполнения", textUnderName.trim());
     }
 
     @Test
-//    public void test_110() {
-        public void shouldShowWarningMassageWithNameAndPhone() {
+        public void shouldShowWarningMassageWithoutCheckbox() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("[data-test-id='name'] [name='name']")).sendKeys("Иванов Иван");
         driver.findElement(By.cssSelector("[data-test-id='phone'] [name='phone']")).sendKeys("+79000000000");
@@ -122,17 +69,24 @@ public class ValidationCheck {
     }
 
     @Test
-    public void shouldShowWarningMassageWithEnglishNameOnly() {
+    public void shouldShowWarningMassageWithIncorrectName(){
         driver.get("http://localhost:9999");
-        driver.findElement(By.cssSelector("[data-test-id='name'] [name='name']")).sendKeys("Sidorov Pavel");
+        driver.findElement(By.cssSelector("[data-test-id='name'] [name='name']")).sendKeys("Petrov Petr");
+        driver.findElement(By.cssSelector("[data-test-id='phone'] [name='phone']")).sendKeys("+79998887766");
+        driver.findElement(By.cssSelector("[data-test-id='agreement'] .checkbox__box")).click();
         driver.findElement(By.cssSelector(".button__text")).click();
-        String textUnderName = driver.findElement(By.cssSelector("[data-test-id='name'] .input__sub")).getText();
+        String textUnderName = driver.findElement(By.cssSelector(".input_invalid[data-test-id='name'] .input__sub")).getText();
         assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", textUnderName.trim());
     }
 
-    @AfterEach
-    public void closeDriver() {
-        driver.quit();
-        driver = null;
+    @Test
+    public void shouldShowWarningMassageWithIncorrectPhone(){
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("[data-test-id='name'] [name='name']")).sendKeys("Бобл Александр");
+        driver.findElement(By.cssSelector("[data-test-id='phone'] [name='phone']")).sendKeys("89008887766");
+        driver.findElement(By.cssSelector("[data-test-id='agreement'] .checkbox__box")).click();
+        driver.findElement(By.cssSelector(".button__text")).click();
+        String textUnderName = driver.findElement(By.cssSelector(".input_invalid[data-test-id='phone'] .input__sub")).getText();
+        assertEquals("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.", textUnderName.trim());
     }
 }
